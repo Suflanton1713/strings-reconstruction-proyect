@@ -6,7 +6,18 @@ package object ReconstCadenas {
   def reconstruirCadenaIngenuo(n: Int, o: Oraculo): Seq[Char] = {
     // recibe la longitud de la secuencia que hay que reconstruir (n), y un oraculo para esa secuencia
     // y devuelve la secuencia reconstruida
-    ???
+    def generarSigmaN(n:Int): Seq[Seq[Char]]={
+      (1 to n).foldLeft(Seq(Seq.empty[Char]))((cadenasPrevias, nStr) =>
+        for {
+          w <- alfabeto
+          prev <- cadenasPrevias
+        } yield prev :+ w)
+    }
+
+    val sigma_n = generarSigmaN(n)
+
+    sigma_n.find(c=> o(c) && c.length==n).getOrElse(Seq())
+
   }
 
   def reconstruirCadenaMejorado(n: Int, o: Oraculo): Seq[Char] = {
