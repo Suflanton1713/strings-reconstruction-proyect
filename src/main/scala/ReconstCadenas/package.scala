@@ -20,6 +20,7 @@ package object ReconstCadenas {
 
   }
 
+  /*
   def reconstruirCadenaMejorado(n: Int, o: Oraculo): Seq[Char] = {
     // recibe la longitud de la secuencia que hay que reconstruir (n), y un oraculo para esa secuencia
     // y devuelve la secuencia reconstruida
@@ -54,5 +55,7 @@ package object ReconstCadenas {
 
     ???
   }
+
+   */
 
 }
