@@ -10,7 +10,7 @@ package object ReconstCadenasPar {
     // recibe la longitud de la secuencia que hay que reconstruir (n), y un oraculo para esa secuencia
     // y devuelve la secuencia reconstruida
     // Usa paralelismo de tareas
-    
+    ???
   }
 
   def reconstruirCadenaMejoradoPar(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
