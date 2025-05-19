@@ -21,29 +21,43 @@ package object ArbolSufijos {
   def pertenece(s: Seq[Char], t: Trie): Boolean = {
     s match {
       case s1 +: ss => t match {
-        case Node(_, _, hijos) =>
+        case Nodo(_, _, hijos) =>
           hijos.exists(node => raiz(node) == s1 && pertenece(ss, node))
-        case Head(_, _) => false
+        case Hoja(_, _) => false
       }
 
       case Seq() => t match {
-        case Node(_, marcada, _) => marcada
-        case Head(_, marcada)    => marcada
+        case Nodo(_, marcada, _) => marcada
+        case Hoja(_, marcada)    => marcada
       }
     }
   }
 
 
   def adicionar(s: Seq[Char], t: Trie): Trie = {
-    if(pertenece(s)){Trie}else{
-      s match{
-        case s1 +: ss => t match{
-          case Node(_, _, hijos)=> hijos.filter(h => raiz(h) == s1).head
-          case Head(c,m) => adicionar(ss, Nodo(car = c, marcada = m, hijos = List()))
-        }
-        case s1 => Head(car = s1, marcada = true)
 
-        case Seq() =>  t 
+    def construirRama(s: Seq[Char]): Trie={
+      s match{
+        case s1+:Seq() => Hoja(s1,true)
+        case s1+:ss => Nodo(s1, false, List(construirRama(ss)))
+      }
+    }
+
+    if(pertenece(s,t)){t}else{
+
+      (s,t) match{
+
+        case(s, Hoja(c,m)) => Nodo(c, m, List(construirRama(s)))
+
+        case(s1+:ss, Nodo(c,m,hijos)) => if(cabezas(t).contains(s1)){
+          val nuevosHijos = hijos.map(hijo => if(raiz(hijo) == s1) adicionar(ss,hijo) else hijo)
+          Nodo(c,m,nuevosHijos)
+        }else{
+          Nodo(c,m, hijos ++ List(construirRama(s1+:ss)))
+        }
+
+        case(Seq(),_) => t
+
       }
     }
   }
