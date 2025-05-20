@@ -1,8 +1,88 @@
 import Oraculo._
+import ArbolSufijos._
 import ReconstCadenas._
 import scala.util.Random
 
 val random = new Random()
+/*
+//Pruebas para árbol
+val valt = Nodo(' ', false, List(
+  Nodo('a', false, List(
+    Nodo('c', true, List(
+      Nodo('a', false, List(
+        Hoja('c', true)
+      )),
+      Hoja('t', true)
+    ))
+  )),
+  Nodo('c', true, List(
+    Nodo('a', false, List(
+      Nodo('c', true, List(
+        Hoja('t', true)
+      ))
+    )),
+    Hoja('t', true)
+  )),
+  Hoja('t', true)
+))
+
+assert(pertenece("t".toSeq, valt))
+assert(pertenece("c".toSeq, valt))
+assert(pertenece("ac".toSeq, valt))
+assert(pertenece("acac".toSeq, valt))
+assert(pertenece("cact".toSeq, valt))
+assert(pertenece("act".toSeq, valt))
+
+assert(!pertenece("cat".toSeq, valt))
+assert(!pertenece("ca".toSeq, valt))
+assert(!pertenece("acact".toSeq, valt))
+assert(!pertenece("aca".toSeq, valt))
+
+// Árbol vacío con raíz ficticia
+val trieVacio = Nodo('_', false, List())
+
+// Paso 1: adicionar "cat"
+val t1 = adicionar("cat".toSeq, trieVacio)
+assert(pertenece("cat".toSeq, t1))
+assert(!pertenece("ca".toSeq, t1))
+assert(!pertenece("c".toSeq, t1))
+
+// Paso 2: adicionar "ca"
+val t2 = adicionar("ca".toSeq, t1)
+assert(pertenece("cat".toSeq, t2))
+assert(pertenece("ca".toSeq, t2))
+assert(!pertenece("c".toSeq, t2))
+
+// Paso 3: adicionar "c"
+val t3 = adicionar("c".toSeq, t2)
+assert(pertenece("cat".toSeq, t3))
+assert(pertenece("ca".toSeq, t3))
+assert(pertenece("c".toSeq, t3))
+
+// Paso 4: adicionar "c" de nuevo (no cambia)
+val t4 = adicionar("c".toSeq, t3)
+assert(t3 == t4) // no se modifica
+
+// Paso 5: adicionar "cactus"
+val t5 = adicionar("cactus".toSeq, t4)
+assert(pertenece("cactus".toSeq, t5))
+assert(pertenece("cat".toSeq, t5))
+assert(pertenece("ca".toSeq, t5))
+assert(pertenece("c".toSeq, t5))
+
+// Paso 6: verificar cadenas que no están
+assert(!pertenece("act".toSeq, t5))
+assert(!pertenece("t".toSeq, t5))
+
+
+t5
+
+val entradas = Seq(
+  "acac".toSeq,
+  "cact".toSeq)
+
+val nuevoArbol = arbolDeSufijos(entradas)
+*/
 
 def secAlAzar(long:Int, s:Seq[Char]): Seq[Char] = {
   //Crea una secuencia de long caracteres del alfabeto,
@@ -13,7 +93,7 @@ def secAlAzar(long:Int, s:Seq[Char]): Seq[Char] = {
     secAlAzar(long,alfabeto(indiceAzar)+:s)
   }
 }
-val costoOraculo = 1
+val costoOraculo = 0
 
 val sec1=Seq('a', 'c', 'c', 'a')
 val sec2 = Seq('a', 'c', 'g', 'c', 'a')
@@ -41,6 +121,7 @@ def pruebasIngenuo (ss:Seq[Seq[Char]]) = for {
   s <- ss
   o = crearOraculo(costoOraculo)(s)
 } yield (s,reconstruirCadenaIngenuo(s.length,o))
+
 
 /*
 

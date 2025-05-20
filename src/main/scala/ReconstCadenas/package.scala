@@ -9,14 +9,14 @@ package object ReconstCadenas {
     def generarSigmaN(n:Int): Seq[Seq[Char]]={
       (1 to n).foldLeft(Seq(Seq.empty[Char]))((cadenasPrevias, nStr) =>
         for {
-          w <- alfabeto
           prev <- cadenasPrevias
+          w <- alfabeto
         } yield prev :+ w)
     }
 
     val sigma_n = generarSigmaN(n)
 
-    sigma_n.find(c=> o(c) && c.length==n).getOrElse(Seq())
+    sigma_n.find(c=> o(c)).getOrElse(Seq())
 
   }
 

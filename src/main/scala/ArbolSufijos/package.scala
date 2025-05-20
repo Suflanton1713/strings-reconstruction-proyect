@@ -56,6 +56,8 @@ package object ArbolSufijos {
           Nodo(c,m, hijos ++ List(construirRama(s1+:ss)))
         }
 
+        case (Seq(), Nodo(c, m, hijos)) => Nodo(c, true, hijos)
+
         case(Seq(),_) => t
 
       }
@@ -63,8 +65,14 @@ package object ArbolSufijos {
   }
 
   def arbolDeSufijos(ss: Seq[Seq[Char]]): Trie = {
-    // dada una secuencia no vacia de secuencias devuelve el arbol de sufijos asociado a esas secuencias
+    // dada una secuencia no vacia de secuencias devuelve el arbol de sufijos asociado a esas secuencia
+    def sufijosDeSec(ss:Seq[Seq[Char]]): Seq[Seq[Char]]={
+      ss.foldLeft(Seq.empty[Seq[Char]])((suf,cad)=>
+        suf ++ (for (n <- 0 until cad.length) yield cad.drop(n)))
+    }
+    val trie: Trie = Nodo(car = ' ', marcada=false, List())
+    val sufijos = sufijosDeSec(ss)
 
-    ???
+    sufijos.foldLeft(trie)((t,s) => adicionar(s,t))
   }
 }
