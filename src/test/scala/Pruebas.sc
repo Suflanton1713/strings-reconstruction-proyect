@@ -4,7 +4,7 @@ import ReconstCadenas._
 import scala.util.Random
 
 val random = new Random()
-/*
+
 //Pruebas para árbol
 val valt = Nodo(' ', false, List(
   Nodo('a', false, List(
@@ -82,8 +82,8 @@ val entradas = Seq(
   "cact".toSeq)
 
 val nuevoArbol = arbolDeSufijos(entradas)
-*/
 
+/*
 def secAlAzar(long:Int, s:Seq[Char]): Seq[Char] = {
   //Crea una secuencia de long caracteres del alfabeto,
   // escogidos de forma aleatoria, terminando en s
@@ -122,7 +122,7 @@ def pruebasIngenuo (ss:Seq[Seq[Char]]) = for {
   o = crearOraculo(costoOraculo)(s)
 } yield (s,reconstruirCadenaIngenuo(s.length,o))
 
-
+*/
 /*
 
 def pruebasMejorado (ss:Seq[Seq[Char]]) = for {

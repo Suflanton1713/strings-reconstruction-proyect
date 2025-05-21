@@ -47,7 +47,7 @@ package object ArbolSufijos {
 
       (s,t) match{
 
-        case(s, Hoja(c,m)) => Nodo(c, m, List(construirRama(s)))
+        case(s1+:ss, Hoja(c,m)) => Nodo(c, m, List(construirRama(s1+:ss)))
 
         case(s1+:ss, Nodo(c,m,hijos)) => if(cabezas(t).contains(s1)){
           val nuevosHijos = hijos.map(hijo => if(raiz(hijo) == s1) adicionar(ss,hijo) else hijo)
@@ -58,7 +58,7 @@ package object ArbolSufijos {
 
         case (Seq(), Nodo(c, m, hijos)) => Nodo(c, true, hijos)
 
-        case(Seq(),_) => t
+        case(Seq(), t) => t
 
       }
     }
