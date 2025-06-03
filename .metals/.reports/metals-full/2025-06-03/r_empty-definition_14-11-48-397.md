@@ -1,3 +1,31 @@
+error id: file:///C:/Users/Usuario/OneDrive/Escritorio/Universidad/4%20Semestre/FDP%20funcional%20y%20concurrente/Proyecto/strings-reconstruction-proyect/src/main/scala/ReconstCadenasPar/package.scala:filter.
+file:///C:/Users/Usuario/OneDrive/Escritorio/Universidad/4%20Semestre/FDP%20funcional%20y%20concurrente/Proyecto/strings-reconstruction-proyect/src/main/scala/ReconstCadenasPar/package.scala
+empty definition using pc, found symbol in pc: filter.
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -common/candidatos/filter.
+	 -common/candidatos/filter#
+	 -common/candidatos/filter().
+	 -scala/collection/parallel/CollectionConverters.candidatos.filter.
+	 -scala/collection/parallel/CollectionConverters.candidatos.filter#
+	 -scala/collection/parallel/CollectionConverters.candidatos.filter().
+	 -Oraculo.candidatos.filter.
+	 -Oraculo.candidatos.filter#
+	 -Oraculo.candidatos.filter().
+	 -ArbolSufijos.candidatos.filter.
+	 -ArbolSufijos.candidatos.filter#
+	 -ArbolSufijos.candidatos.filter().
+	 -candidatos/filter.
+	 -candidatos/filter#
+	 -candidatos/filter().
+	 -scala/Predef.candidatos.filter.
+	 -scala/Predef.candidatos.filter#
+	 -scala/Predef.candidatos.filter().
+offset: 1182
+uri: file:///C:/Users/Usuario/OneDrive/Escritorio/Universidad/4%20Semestre/FDP%20funcional%20y%20concurrente/Proyecto/strings-reconstruction-proyect/src/main/scala/ReconstCadenasPar/package.scala
+text:
+```scala
 import common._
 import scala.collection.parallel.CollectionConverters._
 import Oraculo._
@@ -30,7 +58,7 @@ package object ReconstCadenasPar {
         if (candidatos.size >= umbral)
           candidatos.toVector.par.filter(o).seq.toSet // <--- esta parte cambia
         else
-          candidatos.filter(o).toSet
+          candidatos.fil@@ter(o).toSet
 
 
       extender(k + 1, filtrados)
@@ -68,3 +96,10 @@ package object ReconstCadenasPar {
     ???
   }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: filter.
