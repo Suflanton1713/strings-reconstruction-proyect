@@ -26,6 +26,8 @@ val valt = Nodo(' ', false, List(
   Hoja('t', true)
 ))
 
+pertenece(" ".toSeq, valt)
+
 assert(pertenece("t".toSeq, valt))
 assert(pertenece("c".toSeq, valt))
 assert(pertenece("ac".toSeq, valt))

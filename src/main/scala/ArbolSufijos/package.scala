@@ -20,6 +20,7 @@ package object ArbolSufijos {
 
   def pertenece(s: Seq[Char], t: Trie): Boolean = {
     s match {
+    
       case s1 +: ss => t match {
         case Nodo(_, _, hijos) =>
           hijos.exists(node => raiz(node) == s1 && pertenece(ss, node))
