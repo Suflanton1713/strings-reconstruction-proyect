@@ -1,0 +1,5 @@
+[0m[[0m[33mwarn[0m] [0m[0m[33m[33m-- Deprecation Warning: C:\Users\lialq\IdeaProjects\strings-reconstruction-proyect\src\main\scala\ReconstCadenasPar\package.scala:143:58 [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0m[33m143 |[0m      [33mval[0m [36minitialSc[0m = alfabeto.map([36mc[0m => Seq(c)).filter(o).seq[0m
+[0m[[0m[33mwarn[0m] [0m[0m[33m[33m    |[0m                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0m[33m    |[0m[33mmethod[0m [35mseq[0m in [33mtrait[0m [35mIterable[0m is deprecated since 2.13.0: Iterable.seq always returns the iterable itself[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m

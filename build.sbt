@@ -7,11 +7,13 @@ lazy val root = (project in file("."))
     name := "strings-reconstruction-proyect",
 
     javaOptions ++= Seq(
-      "-Xms1G",                        // Memoria mínima del heap
+      "-Xms5G",                        // Memoria mínima del heap
       "-Xmx8G",                        // Memoria máxima del heap
       "-XX:+UseG1GC",                 // Usar el recolector de basura G1
       "-XX:-UseGCOverheadLimit",      // Desactivar el límite de overhead de GC
-      "-Djava.util.concurrent.ForkJoinPool.common.parallelism=6"
+      "-Djava.util.concurrent.ForkJoinPool.common.parallelism=6",
+        "-XX:+PrintGCDetails",
+        "-XX:+PrintGCTimeStamps"
     )
   )
 

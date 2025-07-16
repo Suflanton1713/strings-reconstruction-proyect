@@ -3,54 +3,54 @@ import Oraculo._
 
 package object ReconstCadenas {
 
-
-  def reconstruirCadenaIngenuoConIterator(n: Int, o: Oraculo): Seq[Char] = {
-    def generarSigmaN(n: Int): Iterator[Seq[Char]] = {
-      if (n == 0) Iterator(Seq.empty)
-      else {
-        val sufijos = generarSigmaN(n - 1) // evalúa solo una vez
-        for {
-          suf <- sufijos
-          c <- alfabeto
-        } yield c +: suf
-      }
-    }
-    generarSigmaN(n).find(o).getOrElse(Seq.empty)
-  }
-
-
-
   def reconstruirCadenaIngenuo(n: Int, o: Oraculo): Seq[Char] = {
-    def generarSigmaN(n: Int): Seq[Seq[Char]] = {
-      if (n == 0) Seq(Seq.empty)
-      else {
-        val sufijos = generarSigmaN(n - 1) // evalúa solo una vez
-        for {
-          suf <- sufijos
-          c <- alfabeto
-        } yield c +: suf
-      }
+    def generarCombinaciones(n: Int): LazyList[Seq[Char]] = {
+      if (n == 0) LazyList(Seq.empty)
+      else for {
+        suf <- generarCombinaciones(n - 1)
+        c <- LazyList.from(alfabeto)
+      } yield c +: suf
     }
 
-    generarSigmaN(n).find(o).getOrElse(Seq.empty)
+    val combinaciones = generarCombinaciones(n)
+
+    val total = math.pow(alfabeto.length, n).toInt
+    val octavo = total / 8
+
+    val ((res1, res2, res3, res4), (res5, res6, res7, res8)) = (
+      (
+        combinaciones.slice(0 * octavo, 1 * octavo).find(o),
+        combinaciones.slice(1 * octavo, 2 * octavo).find(o),
+        combinaciones.slice(2 * octavo, 3 * octavo).find(o),
+        combinaciones.slice(3 * octavo, 4 * octavo).find(o)
+      ),
+      (
+        combinaciones.slice(4 * octavo, 5 * octavo).find(o),
+        combinaciones.slice(5 * octavo, 6 * octavo).find(o),
+        combinaciones.slice(6 * octavo, 7 * octavo).find(o),
+        combinaciones.slice(7 * octavo, total).find(o)
+      )
+    )
+
+    res1.orElse(res2).orElse(res3).orElse(res4)
+      .orElse(res5).orElse(res6).orElse(res7).orElse(res8)
+      .getOrElse(Seq.empty)
   }
 
-  def reconstruirCadenaMejorado(n: Int, o: Oraculo): Seq[Char] = {
-    def generarValidas(k: Int): Seq[Seq[Char]] = {
-      if (k == 0) Seq(Seq.empty)
-      else {
-        for {
-          sufijo <- generarValidas(k - 1)
-          c <- alfabeto
-          nuevaCadena = c +: sufijo
-          if o(nuevaCadena)
-        } yield nuevaCadena
-      }
+  def reconstruirCadenaMejorado(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
+    def generarCombinaciones(n: Int): Seq[Seq[Char]] = {
+      if (n == 0) LazyList(Seq.empty)
+      else for {
+        suf <- generarCombinaciones(n - 1).filter(o)
+        c <- alfabeto
+      } yield c +: suf
     }
 
-    generarValidas(n).headOption.getOrElse(Seq.empty)
-  }
+    generarCombinaciones(n).headOption.getOrElse(Seq.empty)
 
+   
+  }
+  
 
   def reconstruirCadenaTurbo(n: Int, o: Oraculo): Seq[Char] = {
     // recibe la longitud de la secuencia que hay que reconstruir (n, potencia de 2), y un oraculo para esa secuencia
@@ -81,12 +81,12 @@ package object ReconstCadenas {
         w <- sc
         v <- sc
         s = w ++ v
-        if (1 until k).forall(c => sc.contains(s.slice(c, c + k)))
+        if (1 until k).forall(i => sc.contains(s.slice(i, i + k)))
       } yield s
     }
 
     def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
-      val sigmaK = filtrar(scInicial, k).filter(o)
+      val sigmaK = filtrar(scInicial, k/2).filter(o)
       val cadenaW = sigmaK.head
       if(k == n) cadenaW else aux(sigmaK, k * 2)
     }
@@ -102,7 +102,6 @@ package object ReconstCadenas {
     // Usa el filtro para ir mas rapido
     // Usa arboles de sufijos para guardar Seq[Seq[Char]]
     def filtrar(sc1: Seq[Seq[Char]], k:Int): Seq[Seq[Char]] = {
-      val k = sc1.length;
       val scTrie = arbolDeSufijos(sc1);
       for {
         w <- sc1
@@ -113,7 +112,7 @@ package object ReconstCadenas {
     }
 
     def aux(scInicial: Seq[Seq[Char]], k:Int): Seq[Char] = {
-      val sigmaK = filtrar(scInicial, k).filter(o)
+      val sigmaK = filtrar(scInicial, k/2).filter(o)
       val cadenaW = sigmaK.head
       if (k == n) cadenaW else aux(sigmaK, k * 2)
     }

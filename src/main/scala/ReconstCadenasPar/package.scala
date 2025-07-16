@@ -3,101 +3,61 @@ import common.*
 import scala.collection.parallel.CollectionConverters.*
 import Oraculo.*
 import ArbolSufijos.*
-
-import scala.Console.println
+import ReconstCadenas.*
 
 package object ReconstCadenasPar {
-  // Ahora versiones paralelas
 
   def reconstruirCadenaIngenuoPar(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
-    // recibe la longitud de la secuencia que hay que reconstruir (n), y un oraculo para esa secuencia
-    // y devuelve la secuencia reconstruida
-    // Usa paralelismo de tareas
-    // Genera combinaciones de forma perezosa
-    def generarCombinaciones(n: Int): Seq[Seq[Char]] = {
-      if (n == 0) Seq(Seq.empty)
-      else {
-        val sufijos = generarCombinaciones(n - 1)
-        for {
-          suf <- sufijos
-          c <- alfabeto
-        } yield c +: suf
-      }
+    def generarCombinaciones(n: Int): LazyList[Seq[Char]] = {
+      if (n == 0) LazyList(Seq.empty)
+      else for {
+        suf <- generarCombinaciones(n - 1)
+        c <- LazyList.from(alfabeto)
+      } yield c +: suf
     }
-
-    val total = math.pow(4, n).toLong
-    val cuarto = (total / 4).toInt
 
     val combinaciones = generarCombinaciones(n)
 
-    // Búsqueda paralela en 4 cuartos del espacio
-    val (res1, res2, res3, res4) = parallel(
-      combinaciones.slice(0, cuarto).find(o),
-      combinaciones.slice(cuarto, cuarto * 2).find(o),
-      combinaciones.slice(cuarto * 2, cuarto * 3).find(o),
-      combinaciones.slice(cuarto * 3, cuarto * 4).find(o)
+    val total = math.pow(alfabeto.length, n).toInt
+    val octavo = total / 8
+
+    val ((res1, res2, res3, res4), (res5, res6, res7, res8)) = parallel(
+      parallel(
+        combinaciones.slice(0 * octavo, 1 * octavo).find(o),
+        combinaciones.slice(1 * octavo, 2 * octavo).find(o),
+        combinaciones.slice(2 * octavo, 3 * octavo).find(o),
+        combinaciones.slice(3 * octavo, 4 * octavo).find(o)
+      ),
+      parallel(
+        combinaciones.slice(4 * octavo, 5 * octavo).find(o),
+        combinaciones.slice(5 * octavo, 6 * octavo).find(o),
+        combinaciones.slice(6 * octavo, 7 * octavo).find(o),
+        combinaciones.slice(7 * octavo, total).find(o)
+      )
     )
-
-    // Devuelve el primero que encuentre (si hay alguno)
-    res1.orElse(res2).orElse(res3).orElse(res4).getOrElse(Seq.empty)
+    
+    res1.orElse(res2).orElse(res3).orElse(res4)
+      .orElse(res5).orElse(res6).orElse(res7).orElse(res8)
+      .getOrElse(Seq.empty)
   }
-
-  def reconstruirCadenaIngenuoParConIterator(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
-    // Genera combinaciones de forma perezosa
-    def generarCombinaciones(n: Int): Iterator[Seq[Char]] = {
-      if (n == 0) Iterator(Seq.empty)
-      else {
-        val sufijos = generarCombinaciones(n - 1)
-        for {
-          suf <- sufijos
-          c <- alfabeto
-        } yield c +: suf
-      }
-    }
-
-    val total = math.pow(4, n)
-    val cuarto = (total / 4).toInt
-
-    // Búsqueda paralela en 4 cuartos del espacio
-    val (res1, res2, res3, res4) = parallel(
-      generarCombinaciones(n).slice(0, cuarto).find(o),
-      generarCombinaciones(n).slice(cuarto, cuarto * 2).find(o),
-      generarCombinaciones(n).slice(cuarto * 2, cuarto * 3).find(o),
-      generarCombinaciones(n).slice(cuarto * 3, cuarto * 4).find(o)
-    )
-
-    println((res1, res2, res3, res4))
-
-    // Devuelve el primero que encuentre (si hay alguno)
-    res1.orElse(res2).orElse(res3).orElse(res4).getOrElse(Seq.empty)
-  }
-
 
   def reconstruirCadenaMejoradoPar(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
-    // recibe la longitud de la secuencia que hay que reconstruir (n), y un oraculo para esa secuencia
-    // y devuelve la secuencia reconstruida
-    // Usa la propiedad de que si s=s1++s2 entonces s1 y s2 tambien son subsecuencias de s
-    // Usa paralelismo de tareas y/o datos
-
-    val ans = (1 to n).foldLeft(Seq(Seq.empty[Char])) { (cadenasPrevias, _) =>
-      val (izq, der) = cadenasPrevias.splitAt(cadenasPrevias.size / 2)
-      val cadIzq = for {
-        prev <- izq
-        w <- alfabeto
-
-      } yield prev :+ w
-
-      val cadDer = for {
-        prev <- der
-        w <- alfabeto
-
-      } yield prev :+ w
-      (cadIzq ++ cadDer).filter(o)
-
+    def generarCombinaciones(n: Int): Seq[Seq[Char]] = {
+      if (n == 0) LazyList(Seq.empty)
+      else for {
+        suf <- generarCombinaciones(n - 1).filter(o)
+        c <- alfabeto.par
+      } yield c +: suf
     }
+    
 
-    ans.flatten
+    generarCombinaciones(n).headOption.getOrElse(Seq.empty)
+
+
   }
+
+  
+
 
   def reconstruirCadenaTurboPar(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
     // recibe la longitud de la secuencia que hay que reconstruir (n, potencia de 2), y un oraculo para esa secuencia
@@ -116,6 +76,7 @@ package object ReconstCadenasPar {
       val cadenaW = sigmaK.head
       if (k == n) cadenaW else aux(sigmaK, k * 2)
     }
+
     val initialSc = alfabeto.par.map(c => Seq(c)).filter(o).seq
     aux(initialSc, 2)
   }
@@ -125,24 +86,24 @@ package object ReconstCadenasPar {
     // y devuelve la secuencia reconstruida
     // Usa la propiedad de que si s=s1++s2 entonces s1 y s2 tambien son subsecuencias de s
     // Usa paralelismo de tareas y/o datos
-      def filtrar(sc: Seq[Seq[Char]], k: Int): Seq[Seq[Char]] = {
-        (for {
-          w <- sc.par
-          v <- sc
-          s = w ++ v
-          if (1 until k).forall(c => sc.contains(s.slice(c, c + k)))
-        } yield s).seq
-      }
-
-      def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
-        val sigmaK = filtrar(scInicial, k).par.filter(o).seq
-        val cadenaW = sigmaK.head
-        if (k == n) cadenaW else aux(sigmaK, k * 2)
-      }
-
-      val initialSc = alfabeto.par.map(c => Seq(c)).filter(o).seq
-      aux(initialSc, 2)
+    def filtrar(sc: Seq[Seq[Char]], k: Int): Seq[Seq[Char]] = {
+      (for {
+        w <- sc.par
+        v <- sc
+        s = w ++ v
+        if (1 until k).forall(c => sc.contains(s.slice(c, c + k)))
+      } yield s).seq
     }
+
+    def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
+      val sigmaK = filtrar(scInicial, k / 2).par.filter(o).seq
+      val cadenaW = sigmaK.head
+      if (k == n) cadenaW else aux(sigmaK, k * 2)
+    }
+
+    val initialSc = alfabeto.map(c => Seq(c)).filter(o)
+    aux(initialSc, 2)
+  }
 
 
   def reconstruirCadenaTurboAceleradaPar(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
@@ -162,15 +123,14 @@ package object ReconstCadenasPar {
     }
 
     def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
-      val sigmaK = filtrar(scInicial, k).par.filter(o).seq
+      val sigmaK = filtrar(scInicial, k / 2).par.filter(o).seq
       val cadenaW = sigmaK.head
       if (k == n) cadenaW else aux(sigmaK, k * 2)
     }
 
-    val initialSc = alfabeto.par.map(c => Seq(c)).filter(o).seq
+    val initialSc = alfabeto.map(c => Seq(c)).filter(o)
     aux(initialSc, 2)
   }
-    
-    
-    
+
+
 }
