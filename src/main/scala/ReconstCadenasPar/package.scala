@@ -71,8 +71,7 @@ package object ReconstCadenasPar {
 
     def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
       val sigmaK = generarSigmaK(scInicial).par.filter(o).seq
-      val cadenaW = sigmaK.head
-      if (k == n) cadenaW else aux(sigmaK, k * 2)
+      if (k == n) sigmaK.head else aux(sigmaK, k * 2)
     }
 
     val initialSc = alfabeto.par.map(c => Seq(c)).filter(o).seq
@@ -95,8 +94,7 @@ package object ReconstCadenasPar {
 
     def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
       val sigmaK = filtrar(scInicial, k / 2).par.filter(o).seq
-      val cadenaW = sigmaK.head
-      if (k == n) cadenaW else aux(sigmaK, k * 2)
+      if (k == n) sigmaK.head else aux(sigmaK, k * 2)
     }
 
     val initialSc = alfabeto.map(c => Seq(c)).filter(o)
@@ -122,8 +120,7 @@ package object ReconstCadenasPar {
 
     def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
       val sigmaK = filtrar(scInicial, k / 2).par.filter(o).seq
-      val cadenaW = sigmaK.head
-      if (k == n) cadenaW else aux(sigmaK, k * 2)
+      if (k == n) sigmaK.head else aux(sigmaK, k * 2)
     }
 
     val initialSc = alfabeto.map(c => Seq(c)).filter(o)
