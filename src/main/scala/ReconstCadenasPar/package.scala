@@ -5,6 +5,8 @@ import Oraculo.*
 import ArbolSufijos.*
 import ReconstCadenas.*
 
+import scala.collection.parallel.immutable.ParSeq
+
 package object ReconstCadenasPar {
 
   def reconstruirCadenaIngenuoPar(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
@@ -42,18 +44,14 @@ package object ReconstCadenasPar {
   }
 
   def reconstruirCadenaMejoradoPar(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
-    def generarCombinaciones(n: Int): Seq[Seq[Char]] = {
-      if (n == 0) LazyList(Seq.empty)
-      else for {
+    def generarCombinaciones(n: Int): ParSeq[Seq[Char]] = {
+      if (n == 0) LazyList(Seq.empty).par
+      else (for {
         suf <- generarCombinaciones(n - 1).filter(o)
-        c <- alfabeto.par
-      } yield c +: suf
+        c <- alfabeto
+      } yield c +: suf).par
     }
-    
-
     generarCombinaciones(n).headOption.getOrElse(Seq.empty)
-
-
   }
 
   

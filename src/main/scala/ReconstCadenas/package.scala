@@ -37,8 +37,8 @@ package object ReconstCadenas {
       .getOrElse(Seq.empty)
   }
 
-  def reconstruirCadenaMejorado(umbral: Int)(n: Int, o: Oraculo): Seq[Char] = {
-    def generarCombinaciones(n: Int): Seq[Seq[Char]] = {
+  def reconstruirCadenaMejorado(n: Int, o: Oraculo): Seq[Char] = {
+    def generarCombinaciones(n: Int): LazyList[Seq[Char]] = {
       if (n == 0) LazyList(Seq.empty)
       else for {
         suf <- generarCombinaciones(n - 1).filter(o)

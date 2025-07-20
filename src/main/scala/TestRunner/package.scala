@@ -10,7 +10,7 @@ import java.util.Date
 object TestRunner extends App {
 
   def comparar(k: Int): (Double, Double, Double) = {
-    val n = k
+    val n = math.pow(2,k).toInt
     val s = generarSecuenciaAleatoria(n, alfabeto)
     val or = crearOraculo(1)(s)
     println(s"\n--- Prueba para k=$k (n=$n) ---")
@@ -22,7 +22,7 @@ object TestRunner extends App {
       KeyValue(Key.exec.maxWarmupRuns -> 5),//60
       KeyValue(Key.verbose -> false)
     ) withWarmer(new Warmer.Default) measure {
-      val resultado = reconstruirCadenaIngenuo(s.length, or)
+      val resultado = reconstruirCadenaMejorado(s.length, or)
       // Añadido: Mostrar resultado secuencial
       println(s"Resultado secuencial: ${resultado.mkString}")
       resultado
@@ -34,7 +34,7 @@ object TestRunner extends App {
       KeyValue(Key.exec.maxWarmupRuns -> 5),
       KeyValue(Key.verbose -> false)
     ) withWarmer(new Warmer.Default) measure {
-      val resultado = reconstruirCadenaIngenuoPar(1)(s.length, or)
+      val resultado = reconstruirCadenaMejoradoPar(1)(s.length, or)
       // Añadido: Mostrar resultado paralelo
       println(s"Resultado paralelo:   ${resultado.mkString}")
       resultado
@@ -54,7 +54,7 @@ object TestRunner extends App {
     println("| k | Tam | T.Secuencial (ms) | T.Paralelo (ms) | Aceleración |")
     println("|---|-----|-------------------|-----------------|--------------|")
     for ((k, (ts, tp, sp)) <- resultados.toSeq.sortBy(_._1)) {
-      val tamano = k
+      val tamano = math.pow(2,k).toInt
       println(f"| $k%2d | $tamano%4d | $ts%17.2f | $tp%16.2f | $sp%12.2f |")
     }
   }
@@ -64,7 +64,7 @@ object TestRunner extends App {
     try {
       writer.println("k,Tamaño,Tiempo_Secuencial,Tiempo_Paralelo,Aceleracion")
       for ((k, (ts, tp, sp)) <- resultados.toSeq.sortBy(_._1)) {
-        val tamano = k
+        val tamano = math.pow(2,k).toInt
         writer.println(f"$k,$tamano,$ts%.2f,$tp%.2f,$sp%.2f")
       }
       println(s"Resultados guardados en el archivo: $nombreArchivo")
@@ -75,12 +75,12 @@ object TestRunner extends App {
 
   val dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss")
   val timestamp = dateFormat.format(new Date())
-  val nombreArchivo = s"resultados_ingenua_12_final_$timestamp.csv"
+  val nombreArchivo = s"resultados_mejorada_final_$timestamp.csv"
 
-  println("Ejecutando pruebas para k de 12 a 12...")
+  println("Ejecutando pruebas para k de 1 a 10...")
 
-  val resultados = (1 to 7).map { k =>
-    println(s"Procesando k = $k (tamaño = ${k})...")
+  val resultados = (1 to 10).map { k =>
+    println(s"Procesando k = $k (tamaño = ${math.pow(2,k).toInt})...")
     val resultado = comparar(k)
     (k, resultado)
   }.toMap
