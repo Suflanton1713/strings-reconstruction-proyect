@@ -26,6 +26,23 @@ val or_1=crearOraculo(costoOraculo)(sec1)
 val or_2=crearOraculo(costoOraculo)(sec2)
 val or_3=crearOraculo(costoOraculo)(sec3)
 
+def secsCortasParaPruebas(n:Int):Seq[Seq[Char]] = for {
+  i <- 1 to n
+  s = secAlAzar(i,Seq())
+} yield s
+
+def secsLargasParaPruebas(n:Int):Seq[Seq[Char]] = for {
+  i <- 1 to n
+  s = secAlAzar(math.pow(2,i).toInt,Seq())
+} yield s
+val prueba= crearOraculo(0)(secAlAzar(4,Seq()))
+val pruebalarga = crearOraculo(0)(secAlAzar(math.pow(2,5).toInt,Seq()))
+reconstruirCadenaIngenuoPar(3)(4, prueba)
+reconstruirCadenaMejoradoPar(16)(math.pow(2,5).toInt, pruebalarga)
+reconstruirCadenaTurboPar(16)(math.pow(2,5).toInt, pruebalarga)
+reconstruirCadenaTurboMejoradaPar(16)(math.pow(2,5).toInt, pruebalarga)
+reconstruirCadenaTurboAceleradaPar(16)(math.pow(2,5).toInt, pruebalarga)
+
 /*
 def secsCortasParaPruebas(n:Int):Seq[Seq[Char]] = for {
   i <- 1 to n

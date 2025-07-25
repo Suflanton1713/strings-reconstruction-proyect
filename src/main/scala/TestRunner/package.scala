@@ -18,11 +18,11 @@ object TestRunner extends App {
 
     // Tiempo secuencial
     val tiempoSecuencial = config(
-      KeyValue(Key.exec.minWarmupRuns -> 5),//20
-      KeyValue(Key.exec.maxWarmupRuns -> 5),//60
+      KeyValue(Key.exec.minWarmupRuns -> 1),//20
+      KeyValue(Key.exec.maxWarmupRuns -> 1),//60
       KeyValue(Key.verbose -> false)
-    ) withWarmer(new Warmer.Default) measure {
-      val resultado = reconstruirCadenaMejorado(s.length, or)
+    ) withWarmer(Warmer.Zero) measure {
+      val resultado = reconstruirCadenaTurboMejorada(s.length, or)
       // Añadido: Mostrar resultado secuencial
       println(s"Resultado secuencial: ${resultado.mkString}")
       resultado
@@ -30,11 +30,11 @@ object TestRunner extends App {
 
     // Tiempo paralelo (única versión paralela incluida)
     val tiempoPar = config(
-      KeyValue(Key.exec.minWarmupRuns -> 5),
-      KeyValue(Key.exec.maxWarmupRuns -> 5),
+      KeyValue(Key.exec.minWarmupRuns -> 1),
+      KeyValue(Key.exec.maxWarmupRuns -> 1),
       KeyValue(Key.verbose -> false)
-    ) withWarmer(new Warmer.Default) measure {
-      val resultado = reconstruirCadenaMejoradoPar(1)(s.length, or)
+    ) withWarmer(Warmer.Zero) measure {
+      val resultado = reconstruirCadenaTurboMejoradaPar(1)(s.length, or)
       // Añadido: Mostrar resultado paralelo
       println(s"Resultado paralelo:   ${resultado.mkString}")
       resultado
@@ -75,11 +75,11 @@ object TestRunner extends App {
 
   val dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss")
   val timestamp = dateFormat.format(new Date())
-  val nombreArchivo = s"resultados_mejorada_final_$timestamp.csv"
+  val nombreArchivo = s"resultados_Turbomejorada_final_12-12_$timestamp.csv"
 
   println("Ejecutando pruebas para k de 1 a 10...")
 
-  val resultados = (1 to 10).map { k =>
+  val resultados = (12 to 12).map { k =>
     println(s"Procesando k = $k (tamaño = ${math.pow(2,k).toInt})...")
     val resultado = comparar(k)
     (k, resultado)
