@@ -167,12 +167,12 @@ package object ReconstCadenasPar {
 
     def aux(scInicial: Seq[Seq[Char]], k: Int): Seq[Char] = {
       val sigmaK = filtrar(scInicial, k / 2)
-      val sigmaKfiltrado = if (sigmaK.length <= umbral) {
+      val sigmaKFiltrado = if (sigmaK.length <= umbral) {
          sigmaK.filter(o)
       } else {
          sigmaK.par.filter(o).seq
       }
-      if (k == n) sigmaKFiltrado.head else aux(sigmaKfiltrado, k * 2)
+      if (k == n) sigmaKFiltrado.head else aux(sigmaKFiltrado, k * 2)
     }
 
     val initialSc = alfabeto.map(c => Seq(c)).filter(o)
