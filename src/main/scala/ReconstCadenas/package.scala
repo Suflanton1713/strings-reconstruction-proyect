@@ -45,7 +45,7 @@ package object ReconstCadenas {
         c <- alfabeto
         s = c +: suf
         if(o(s))
-      } yield c +: suf
+      } yield s
     }
 
     generarCombinaciones(n).headOption.getOrElse(Seq.empty)
