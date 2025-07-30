@@ -41,8 +41,10 @@ package object ReconstCadenas {
     def generarCombinaciones(n: Int): LazyList[Seq[Char]] = {
       if (n == 0) LazyList(Seq.empty)
       else for {
-        suf <- generarCombinaciones(n - 1).filter(o)
+        suf <- generarCombinaciones(n - 1)
         c <- alfabeto
+        s = c +: suf
+        if(o(s))
       } yield c +: suf
     }
 

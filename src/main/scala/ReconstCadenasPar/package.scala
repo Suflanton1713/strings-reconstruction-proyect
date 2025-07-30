@@ -52,9 +52,11 @@ package object ReconstCadenasPar {
     def generarCombinaciones(n: Int): ParSeq[Seq[Char]] = {
       if (n == 0) LazyList(Seq.empty).par
       else (for {
-        suf <- generarCombinaciones(n - 1).filter(o)
+        suf <- generarCombinaciones(n - 1)
         c <- alfabeto
-      } yield c +: suf).par
+        s = c +: suf
+        if(o(s))
+      } yield s).par
     }
     if (n<=umbral){
       reconstruirCadenaMejorado(n,o)
@@ -92,7 +94,7 @@ package object ReconstCadenasPar {
       }else{
         sigmaK.par.filter(o).seq
       }
-      if (k == n) sigmaK.head else aux(sigmaKFiltrado, k * 2)
+      if (k == n) sigmaKFiltrado.head else aux(sigmaKFiltrado, k * 2)
     }
 
     val initialSc = alfabeto.par.map(c => Seq(c)).filter(o).seq
@@ -130,7 +132,7 @@ package object ReconstCadenasPar {
       } else {
         sigmaK.par.filter(o).seq
       }
-      if (k == n) sigmaK.head else aux(sigmaKFiltrado, k * 2)
+      if (k == n) sigmaKFiltrado.head else aux(sigmaKFiltrado, k * 2)
     }
 
     val initialSc = alfabeto.map(c => Seq(c)).filter(o)
@@ -170,7 +172,7 @@ package object ReconstCadenasPar {
       } else {
          sigmaK.par.filter(o).seq
       }
-      if (k == n) sigmaK.head else aux(sigmaKfiltrado, k * 2)
+      if (k == n) sigmaKFiltrado.head else aux(sigmaKfiltrado, k * 2)
     }
 
     val initialSc = alfabeto.map(c => Seq(c)).filter(o)

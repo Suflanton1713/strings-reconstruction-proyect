@@ -10,7 +10,7 @@ import java.util.Date
 object TestRunner extends App {
 
   def comparar(k: Int): (Double, Double, Double) = {
-    val n = math.pow(2,k).toInt
+    val n = k
     val s = generarSecuenciaAleatoria(n, alfabeto)
     val or = crearOraculo(1)(s)
     println(s"\n--- Prueba para k=$k (n=$n) ---")
@@ -22,7 +22,7 @@ object TestRunner extends App {
       KeyValue(Key.exec.maxWarmupRuns -> 1),//60
       KeyValue(Key.verbose -> false)
     ) withWarmer(Warmer.Zero) measure {
-      val resultado = reconstruirCadenaTurboMejorada(s.length, or)
+      val resultado = reconstruirCadenaMejorado(s.length, or)
       // Añadido: Mostrar resultado secuencial
       println(s"Resultado secuencial: ${resultado.mkString}")
       resultado
@@ -34,7 +34,7 @@ object TestRunner extends App {
       KeyValue(Key.exec.maxWarmupRuns -> 1),
       KeyValue(Key.verbose -> false)
     ) withWarmer(Warmer.Zero) measure {
-      val resultado = reconstruirCadenaTurboMejoradaPar(1)(s.length, or)
+      val resultado = reconstruirCadenaMejoradoPar(1)(s.length, or)
       // Añadido: Mostrar resultado paralelo
       println(s"Resultado paralelo:   ${resultado.mkString}")
       resultado
@@ -64,7 +64,7 @@ object TestRunner extends App {
     try {
       writer.println("k,Tamaño,Tiempo_Secuencial,Tiempo_Paralelo,Aceleracion")
       for ((k, (ts, tp, sp)) <- resultados.toSeq.sortBy(_._1)) {
-        val tamano = math.pow(2,k).toInt
+        val tamano =k
         writer.println(f"$k,$tamano,$ts%.2f,$tp%.2f,$sp%.2f")
       }
       println(s"Resultados guardados en el archivo: $nombreArchivo")
@@ -79,7 +79,7 @@ object TestRunner extends App {
 
   println("Ejecutando pruebas para k de 1 a 10...")
 
-  val resultados = (12 to 12).map { k =>
+  val resultados = (1 to 12).map { k =>
     println(s"Procesando k = $k (tamaño = ${math.pow(2,k).toInt})...")
     val resultado = comparar(k)
     (k, resultado)
